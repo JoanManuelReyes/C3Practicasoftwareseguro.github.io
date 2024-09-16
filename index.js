@@ -1,4 +1,3 @@
-// Espera a que el DOM esté completamente cargado
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.querySelector('form');
     const emailInput = document.getElementById('email');
@@ -7,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const maxPasswordLength = 8;
     const maxPhoneLength = 9;
 
-    // Función para detectar posibles inyecciones SQL
+
     const containsSQLInjection = (value) => {
         const sqlInjectionPatterns = [
             /select\s+\*/i,
@@ -22,49 +21,44 @@ document.addEventListener('DOMContentLoaded', () => {
         return sqlInjectionPatterns.some(pattern => pattern.test(value));
     };
 
-    // Limitar el campo de contraseña a 8 caracteres en tiempo real
+
     passwordInput.addEventListener('input', () => {
         if (passwordInput.value.length > maxPasswordLength) {
-            passwordInput.value = passwordInput.value.slice(0, maxPasswordLength); // Limita la entrada a 8 caracteres
+            passwordInput.value = passwordInput.value.slice(0, maxPasswordLength); 
         }
     });
 
-    // Limitar el campo de número telefónico a 9 dígitos en tiempo real
+
     phoneInput.addEventListener('input', () => {
-        phoneInput.value = phoneInput.value.replace(/\D/g, ''); // Elimina todo lo que no sea un número
+        phoneInput.value = phoneInput.value.replace(/\D/g, '');
         if (phoneInput.value.length > maxPhoneLength) {
-            phoneInput.value = phoneInput.value.slice(0, maxPhoneLength); // Limita la entrada a 9 dígitos
+            phoneInput.value = phoneInput.value.slice(0, maxPhoneLength);
         }
     });
 
-    // Validación y recorte de valores cuando se envía el formulario
     form.addEventListener('submit', (event) => {
-        // Recorta el valor del campo de contraseña si es necesario
         if (passwordInput.value.length > maxPasswordLength) {
-            passwordInput.value = passwordInput.value.slice(0, maxPasswordLength); // Recorta a 8 caracteres
+            passwordInput.value = passwordInput.value.slice(0, maxPasswordLength);
         }
 
-        // Recorta el valor del campo de teléfono si es necesario
         if (phoneInput.value.length > maxPhoneLength) {
-            phoneInput.value = phoneInput.value.slice(0, maxPhoneLength); // Recorta a 9 dígitos
+            phoneInput.value = phoneInput.value.slice(0, maxPhoneLength);
         }
 
-        // Verifica posibles inyecciones SQL en los campos de correo electrónico y contraseña
         if (containsSQLInjection(emailInput.value) || containsSQLInjection(passwordInput.value)) {
-            event.preventDefault(); // Evita el envío del formulario
+            event.preventDefault();
             alert('No se permite sentencias SQL.');
-            window.location.reload(); // Recarga la página después del mensaje de alerta
-            return; // Sale de la función para evitar el resto de la validación
+            window.location.reload();
+            return;
         }
 
-        // Verifica si el formulario es válido después del recorte
         if (!form.checkValidity()) {
-            event.preventDefault(); // Evita el envío si hay errores
-            form.reportValidity(); // Muestra los mensajes de error
+            event.preventDefault();
+            form.reportValidity();
         } else {
             alert('Inicio de sesión correcto');
-            event.preventDefault(); // Evita que la página se recargue de inmediato
-            window.location.reload(); // Recarga la página después del mensaje de alerta
+            event.preventDefault(); 
+            window.location.reload();
         }
     });
 });
